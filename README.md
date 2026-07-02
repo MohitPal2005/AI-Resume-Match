@@ -19,7 +19,7 @@ and a free LLM explains the score in plain English.
 [![Deployed on HF Spaces](https://img.shields.io/badge/Backend-Hugging%20Face%20Spaces-FFD21E?logo=huggingface&logoColor=black)](https://huggingface.co/spaces/mohitpal2005/ai-resume-match)
 [![Deployed on Vercel](https://img.shields.io/badge/Frontend-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com/)
 
-**[Live App](https://ai-resume-match-olive.vercel.app)** · **[API Docs](https://mohitpal2005-ai-resume-match.hf.space/docs)** ·
+**[Live App](https://ai-resume-match-olive.vercel.app)** · **[API Docs](https://mohitpal2005-ai-resume-match.hf.space/docs)** · 
 
 </div>
 
@@ -42,6 +42,18 @@ explanations, and a production React frontend, all deployed live and free.
 - 📊 **Live dashboard** — real screening stats pulled from the database, not mock data
 - 💼 **Custom or sample job postings** — screen against a preset job or paste your own JD
 - 🆓 **Zero-cost stack** — every service used (Hugging Face Spaces, Vercel, Groq free tier) has a genuinely free tier
+
+## 📸 Screenshots
+
+<div align="center">
+
+**Resume screening in action — real semantic match score, skill diffing, and an LLM-generated explanation**
+<img src="./docs/screenshot-screening.png" alt="Resume screening result" width="850"/>
+
+**Live dashboard — real stats pulled from the database, not mock data**
+<img src="./docs/screenshot-dashboard.png" alt="Screening dashboard" width="850"/>
+
+</div>
 
 ## 🧬 How it works — the RAG pipeline
 
@@ -72,6 +84,18 @@ Job Description  ───┘                                                   
    writes a 2-3 sentence explanation grounded in the actual data. If no
    `GROQ_API_KEY` is configured, a template-based explanation is used instead
    — the app is always fully functional, with or without the LLM key.
+
+### System architecture
+
+<div align="center">
+<img src="./docs/architecture-diagram.png" alt="System architecture diagram" width="750"/>
+</div>
+
+### Database schema (ER diagram)
+
+<div align="center">
+<img src="./docs/er-diagram.png" alt="Entity relationship diagram" width="750"/>
+</div>
 
 ## 🛠️ Tech stack
 

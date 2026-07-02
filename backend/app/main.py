@@ -156,9 +156,15 @@ def semantic_score(resume_text: str, job_text: str) -> float:
     model = get_model()
     embeddings = model.encode([resume_text, job_text])
     sim = cosine_similarity([embeddings[0]], [embeddings[1]])[0][0]
-    # map cosine similarity (~0.2-0.9 typical range) to a 0-100 score
-    score = max(0, min(100, (sim - 0.15) / (0.75 - 0.15) * 100))
+    LOWER, UPPER = 0.25, 0.68
+    score = max(0, min(100, (sim - LOWER) / (UPPER - LOWER) * 100))
     return round(float(score), 1)
+
+def blended_score(semantic: float, matched: list, missing: list) -> float:
+    total_required = len(matched) + len(missing)
+    skill_ratio = (len(matched) / total_required * 100) if total_required else semantic
+    final = 0.55 * semantic + 0.45 * skill_ratio
+    return round(max(0, min(100, final)), 1)
 
 def generate_explanation(candidate_name: str, matched: List[str], missing: List[str], score: float) -> str:
     """RAG generation step — uses Groq LLM if configured, else a template fallback."""
@@ -286,11 +292,12 @@ async def screen_resume(
         raise HTTPException(422, "Could not extract text from resume — file may be a scanned image")
 
     # RETRIEVAL: semantic similarity + skill extraction
-    score = semantic_score(resume_text, jd_text)
+    raw_semantic = semantic_score(resume_text, jd_text)
     resume_skills = set(extract_skills(resume_text))
     jd_skills = set(extract_skills(jd_text))
     matched = sorted(resume_skills & jd_skills)
     missing = sorted(jd_skills - resume_skills)
+    score = blended_score(raw_semantic, matched, missing)
 
     # GENERATION: LLM (or template) explanation
     explanation = generate_explanation(candidate_name, matched, missing, score)

@@ -19,7 +19,7 @@ and a free LLM explains the score in plain English.
 [![Deployed on HF Spaces](https://img.shields.io/badge/Backend-Hugging%20Face%20Spaces-FFD21E?logo=huggingface&logoColor=black)](https://huggingface.co/spaces/mohitpal2005/ai-resume-match)
 [![Deployed on Vercel](https://img.shields.io/badge/Frontend-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com/)
 
-**[Live App](https://your-vercel-url.vercel.app)** · **[API Docs](https://mohitpal2005-ai-resume-match.hf.space/docs)** ·
+**[Live App](https://ai-resume-match.vercel.app)** · **[API Docs](https://mohitpal2005-ai-resume-match.hf.space/docs)** ·
 
 </div>
 

@@ -1,71 +1,47 @@
-# AI Resume Match
+---
+title: AI Resume Match API
+emoji: 🎯
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+app_port: 7860
+pinned: false
+---
 
-A full-stack AI Resume Screening & Job Recommendation System — built as a real,
-deployable RAG (Retrieval-Augmented Generation) application.
+# AI Resume Match — Backend API
 
-**Live demo:** _add your Vercel URL here once deployed_
-**Backend API:** _add your Hugging Face Space URL here once deployed_
+FastAPI backend for the AI Resume Screening & Job Recommendation System.
 
-## How it works
+## How it works (RAG pipeline)
 
-1. **Retrieve** — resume + job description are embedded with `sentence-transformers`
-   (`all-MiniLM-L6-v2`, free, runs on CPU). Cosine similarity gives a real semantic
-   match score. Skill keywords are extracted and diffed between resume and job.
-2. **Generate** — the retrieved match context (score, matched/missing skills) is
-   passed to a free LLM (Llama 3 via Groq) which writes a plain-English explanation.
-   Falls back to a template explanation if no API key is configured — the app
-   always works.
+1. **Retrieval** — the uploaded resume and job description are embedded using
+   `sentence-transformers` (`all-MiniLM-L6-v2`, free, CPU-only, no API key needed).
+   Cosine similarity between the embeddings produces the match score. Skill
+   keywords are extracted from both texts and diffed to find matched / missing skills.
+2. **Generation** — the retrieved match context (score, matched skills, missing
+   skills) is passed to a free LLM (Groq / Llama 3) to generate a natural-language
+   explanation of the score. If no `GROQ_API_KEY` secret is set, a template-based
+   explanation is used instead — the app is fully functional either way.
 
-## Stack
+## Environment variables (set as Space secrets)
 
-- **Backend:** FastAPI, sentence-transformers, scikit-learn, pdfplumber, python-docx — deployed on Hugging Face Spaces (Docker)
-- **Frontend:** React + Vite + Tailwind CSS + React Router — deployed on Vercel
+| Variable | Required | Description |
+|---|---|---|
+| `GROQ_API_KEY` | No | Free API key from console.groq.com — enables LLM-generated explanations |
+| `GROQ_MODEL` | No | Defaults to `llama-3.1-8b-instant` |
 
-## Project structure
+## API Endpoints
 
-```
-ai-resume-match/
-├── backend/
-│   ├── app/main.py       ← FastAPI app (all API logic)
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── README.md          ← HF Spaces config + docs
-├── frontend/
-│   ├── src/
-│   │   ├── pages/          (Home, Screen, Dashboard)
-│   │   ├── components/     (Layout)
-│   │   └── api.js           (backend API client)
-│   ├── vercel.json
-│   └── .env.example
-└── DEPLOYMENT.md          ← full step-by-step deploy guide
-```
+- `GET /api/jobs` — list job postings
+- `POST /api/jobs` — create a job posting
+- `POST /api/screen` — upload a resume (PDF/DOCX) + job_id or job_description → returns match score, matched/missing skills, AI explanation
+- `GET /api/dashboard` — summary stats + recent screenings
 
-## Quick start (local development)
+## Local development
 
-**Backend:**
 ```bash
-cd backend
 pip install -r requirements.txt
 uvicorn app.main:app --reload
-# runs on http://localhost:8000
 ```
 
-**Frontend:**
-```bash
-cd frontend
-npm install
-echo "VITE_API_URL=http://localhost:8000" > .env
-npm run dev
-# runs on http://localhost:5173
-```
-
-## Deploying it live
-
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for the full step-by-step guide
-(Hugging Face Spaces + Vercel + GitHub, ~20 minutes, completely free).
-
-## Why this project
-
-Built to demonstrate an end-to-end AI product: real embedding-based semantic
-search, LLM-generated explanations grounded in retrieved context (RAG), a
-working REST API, and a production frontend — not just a notebook.
+Visit `http://localhost:8000/docs` for interactive Swagger API docs.
